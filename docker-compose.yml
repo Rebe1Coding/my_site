@@ -27,7 +27,7 @@ services:
     container_name: lil_vludick_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "81:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
