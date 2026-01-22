@@ -8,9 +8,7 @@ venv/
 env/
 ENV/
 
-# Logs
-*.log
-app.log
+
 
 
 # IDE
