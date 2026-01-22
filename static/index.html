@@ -60,7 +60,30 @@
             color: #b0b0b0;
             font-size: 14px;
             line-height: 1.8;
-            white-space: pre-line;
+        }
+
+        /* Стили для Markdown в профиле */
+        .profile-description p {
+            margin: 8px 0;
+        }
+
+        .profile-description strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .profile-description em {
+            font-style: italic;
+        }
+
+        .profile-description ul,
+        .profile-description ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .profile-description li {
+            margin: 5px 0;
         }
 
         /* Правая колонка - Гостевая книга */
@@ -180,6 +203,7 @@
             font-size: 14px;
             line-height: 1.6;
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .no-comments {
@@ -221,21 +245,9 @@
     <div class="container">
         <!-- Левая колонка - Профиль -->
         <aside class="profile">
-            <img src="/static/avatar.jpg" alt="Avatar" class="avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23404040%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23808080%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAvatar%3C/text%3E%3C/svg%3E'">
+            <img src="/static/avatar.png" alt="Avatar" class="avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23404040%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23808080%22 font-family=%22Arial%22 font-size=%2216%7D x=%7B50}%7D y=%7B50}%7D text-anchor=%7Bmiddle}%7D dy=.3em>%7BAvatar}%3C/text>%3C/svg>%7D'">
             <h1>lil_vludick</h1>
-            <div class="profile-description">**Вас приветствует lil_vludick!** 😎
-Вы сейчас на моей страничке, которую я сегодня собрал на коленке из говна, палок, пары банок пива 🍻 и бесконечного вайба 💫
-
-**Член творческого объединения AFK** 🛋️🎨
-
-**Навыки:**
-- Мастер спорта по вайбкодингу 🥇🧘‍♂️
-- Датасаентист (да-да, тот самый) 📊🧠
-- Любитель C# и Python 🐍💻
-- Балуюсь Arduino и C++ 🔌⚡
-- Анализ данных в Гугель Колабе 📈🧮
-
-**Техлид воревор:** Шуми 🐾🔥</div>
+            <div class="profile-description" id="profileDescription"></div>
         </aside>
 
         <!-- Правая колонка - Гостевая книга -->
@@ -268,9 +280,38 @@
         </main>
     </div>
 
+    <!-- Подключение marked.js для Markdown -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    
     <script>
-        // Загрузка комментариев при старте
-        document.addEventListener('DOMContentLoaded', loadComments);
+        // Настройка marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: false,
+            mangle: false
+        });
+
+        // Markdown текст для описания профиля
+        const profileMarkdown = `**Вас приветствует lil_vludick!** 😎  
+Вы сейчас на моей страничке, которую я сегодня собрал на коленке из говна и палок, пары банок пива 🍻 и вайбкодинга 💫
+
+**Член творческого объединения AFK** 🛋️🎨
+
+**Навыки:**
+- Мастер спорта по вайбкодингу 🥇🧘‍♂️
+- Датасаентист (да-да, тот самый) 📊🧠
+- Любитель C# и Python 🐍💻
+- Балуюсь Arduino и C++ 🔌⚡
+- Анализ данных в Гугель Колабе 📈🧮
+
+**Техлид воревор:** Шуми 🐾🔥`;
+
+        // Рендерим описание профиля при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('profileDescription').innerHTML = marked.parse(profileMarkdown);
+            loadComments();
+        });
 
         // Загрузка комментариев с сервера
         async function loadComments() {
