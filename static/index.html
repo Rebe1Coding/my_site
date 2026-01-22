@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lil_vludick - Personal Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            min-height: 100vh;
+        }
+
+        /* Левая колонка - Профиль */
+        .profile {
+            background: #252525;
+            border-radius: 8px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            border: 1px solid #333;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: block;
+            border: 3px solid #404040;
+            object-fit: cover;
+        }
+
+        .profile h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .profile-description {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        /* Правая колонка - Гостевая книга */
+        .guestbook {
+            background: #252525;
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid #333;
+        }
+
+        .guestbook h2 {
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 22px;
+            border-bottom: 2px solid #404040;
+            padding-bottom: 10px;
+        }
+
+        /* Форма комментария */
+        .comment-form {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border: 1px solid #383838;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c0c0c0;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 4px;
+            color: #e0e0e0;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #606060;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: #404040;
+            color: #ffffff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #505050;
+        }
+
+        .submit-btn:disabled {
+            background: #2a2a2a;
+            cursor: not-allowed;
+        }
+
+        /* Комментарии */
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #404040;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .comment-date {
+            color: #808080;
+            font-size: 12px;
+        }
+
+        .comment-text {
+            color: #c0c0c0;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #808080;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        .error-message {
+            background: #3d1f1f;
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: #808080;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .profile {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Левая колонка - Профиль -->
+        <aside class="profile">
+            <img src="/static/avatar.jpg" alt="Avatar" class="avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23404040%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23808080%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EAvatar%3C/text%3E%3C/svg%3E'">
+            <h1>lil_vludick</h1>
+            <div class="profile-description">**Вас приветствует lil_vludick!** 😎
+Вы сейчас на моей страничке, которую я сегодня собрал на коленке из говна, палок, пары банок пива 🍻 и бесконечного вайба 💫
+
+**Член творческого объединения AFK** 🛋️🎨
+
+**Навыки:**
+- Мастер спорта по вайбкодингу 🥇🧘‍♂️
+- Датасаентист (да-да, тот самый) 📊🧠
+- Любитель C# и Python 🐍💻
+- Балуюсь Arduino и C++ 🔌⚡
+- Анализ данных в Гугель Колабе 📈🧮
+
+**Техлид воревор:** Шуми 🐾🔥</div>
+        </aside>
+
+        <!-- Правая колонка - Гостевая книга -->
+        <main class="guestbook">
+            <h2>Гостевая книга</h2>
+
+            <!-- Форма для комментариев -->
+            <div class="comment-form">
+                <div class="error-message" id="errorMessage"></div>
+                
+                <div class="form-group">
+                    <label for="author">Ваше имя:</label>
+                    <input type="text" id="author" placeholder="Введите имя" maxlength="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="text">Комментарий:</label>
+                    <textarea id="text" placeholder="Оставьте свой комментарий..." maxlength="1000" required></textarea>
+                </div>
+
+                <button type="button" class="submit-btn" id="submitBtn" onclick="submitComment()">
+                    Отправить
+                </button>
+            </div>
+
+            <!-- Список комментариев -->
+            <div class="comments-list" id="commentsList">
+                <div class="loading">Загрузка комментариев...</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Загрузка комментариев при старте
+        document.addEventListener('DOMContentLoaded', loadComments);
+
+        // Загрузка комментариев с сервера
+        async function loadComments() {
+            try {
+                const response = await fetch('/api/comments');
+                if (!response.ok) throw new Error('Ошибка загрузки комментариев');
+                
+                const comments = await response.json();
+                displayComments(comments);
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('commentsList').innerHTML = 
+                    '<div class="no-comments">Ошибка загрузки комментариев</div>';
+            }
+        }
+
+        // Отображение комментариев
+        function displayComments(comments) {
+            const container = document.getElementById('commentsList');
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<div class="no-comments">Пока нет комментариев. Будьте первым!</div>';
+                return;
+            }
+
+            container.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">${escapeHtml(comment.author)}</span>
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                    </div>
+                    <div class="comment-text">${escapeHtml(comment.text)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Отправка комментария
+        async function submitComment() {
+            const authorInput = document.getElementById('author');
+            const textInput = document.getElementById('text');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMessage');
+
+            const author = authorInput.value.trim();
+            const text = textInput.value.trim();
+
+            // Валидация
+            if (!author || !text) {
+                showError('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            if (author.length > 100) {
+                showError('Имя слишком длинное (максимум 100 символов)');
+                return;
+            }
+
+            if (text.length > 1000) {
+                showError('Комментарий слишком длинный (максимум 1000 символов)');
+                return;
+            }
+
+            // Блокировка формы
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/comments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ author, text })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Ошибка отправки комментария');
+                }
+
+                // Очистка формы
+                authorInput.value = '';
+                textInput.value = '';
+
+                // Перезагрузка комментариев
+                await loadComments();
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showError(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Отправить';
+            }
+        }
+
+        // Показ ошибки
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+        }
+
+        // Форматирование даты
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+
+            if (diffMins < 1) return 'только что';
+            if (diffMins < 60) return `${diffMins} мин назад`;
+            
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours} ч назад`;
+
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Экранирование HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Отправка по Enter (Ctrl+Enter)
+        document.getElementById('text').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                submitComment();
+            }
+        });
+    </script>
+</body>
+</html>
