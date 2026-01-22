@@ -12,8 +12,6 @@ ENV/
 *.log
 app.log
 
-# Data
-data/comments.json
 
 # IDE
 .vscode/
